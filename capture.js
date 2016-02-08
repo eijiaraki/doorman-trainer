@@ -1,12 +1,11 @@
 "use strict";
 
-
 var cv = require("opencv/lib/opencv.js");
 var haarcascade = __dirname + "/node_modules/opencv/data/haarcascade_frontalface_alt.xml";
 var fs = require('fs');
 
 var setting = {
-	trainingCount: 10,
+	trainingCount: 100,
 	saveTo: __dirname + "/data/positive/",
 	name: false
 }
@@ -34,21 +33,24 @@ Trainer.prototype.capture = function () {
 				for (var i = 0; i < faces.length; i++) {
 					var face = faces[i];
 					if (status.trained >= setting.trainingCount) {
-						console.log("capture finished");
+						console.log("Capture finished. Proceed to training");
 						clearInterval(status.capturing);
 					}
 					// save positive data
 					var im2 = im.crop(face.x, face.y, face.width, face.height);
+					im2.convertGrayscale();
 					im2.save(setting.saveTo + status.trained + ".jpg");
 					status.trained ++;
 					console.log("saved " + status.trained);
 
 					// display
+					/*
 					im.rectangle(
 						[face.x, face.y],
 						[face.width, face.height], 
 						[0, 255, 0],
 						2);
+					*/
 				}
 			}); 
 			window.show(im, 100);
@@ -56,8 +58,8 @@ Trainer.prototype.capture = function () {
 		window.blockingWaitKey(0, 50);
 		});
 	} catch (e){
-		console.log("Couldn't start camera:", e);
 		clearInterval(status.capturing);
+		console.log("Couldn't start camera:" + e);
 	}
 };
 

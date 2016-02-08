@@ -29,14 +29,11 @@ ev.on("loadImagesAndLabels", function (root) {
 			var files = fs.readdirSync(dir);
 			files.forEach(function(file) {
 				file = dir + "/" + file;
-				trainInput.images.push(file);
-				trainInput.labels.push(name);
-				/*
+				//trainInput.images.push(file);
 				cv.readImage(file, function(err, im) {
 					trainInput.images.push(im);
 					trainInput.labels.push(name);
 				});
-				*/
 			});
 		}
 	});
@@ -59,6 +56,7 @@ ev.on("test", function() {
 console.log("Creating file and label list..");
 ev.emit("loadImagesAndLabels", setting.positiveDir);
 ev.emit("loadImagesAndLabels", setting.negativeDir);
+console.log(trainInput);
 console.log("Trainnig...");
 ev.emit("train");
 ev.emit("save");
